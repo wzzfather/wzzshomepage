@@ -1,0 +1,937 @@
+/* 重置和基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 暗蓝色科技风格配色 */
+    --primary-dark: #0a0e1a;
+    --primary-blue: #1a237e;
+    --secondary-blue: #283593;
+    --accent-blue: #3f51b5;
+    --light-blue: #5c6bc0;
+    --cyan: #00bcd4;
+    --teal: #009688;
+    --purple: #7c4dff;
+    
+    /* 渐变色 */
+    --gradient-primary: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #5c6bc0 100%);
+    --gradient-secondary: linear-gradient(135deg, #00bcd4 0%, #009688 100%);
+    --gradient-accent: linear-gradient(135deg, #7c4dff 0%, #3f51b5 100%);
+    
+    /* 文字颜色 */
+    --text-primary: #ffffff;
+    --text-secondary: #b0bec5;
+    --text-muted: #78909c;
+    
+    /* 间距 */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* 阴影 */
+    --shadow-sm: 0 2px 8px rgba(0, 188, 212, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 188, 212, 0.15);
+    --shadow-lg: 0 8px 32px rgba(0, 188, 212, 0.2);
+    --shadow-glow: 0 0 20px rgba(124, 77, 255, 0.3);
+    
+    /* 边框 */
+    --border-radius: 12px;
+    --border-radius-lg: 20px;
+}
+
+body {
+    font-family: 'Rajdhani', 'Microsoft YaHei', sans-serif;
+    background: var(--primary-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none !important; /* 强制隐藏默认鼠标 */
+}
+
+/* 确保所有元素都隐藏系统鼠标 */
+*, *::before, *::after {
+    cursor: none !important;
+}
+
+/* 特别针对可交互元素强制隐藏鼠标 */
+button, a, input, textarea, select, 
+.nav-btn, .content-card, .feature-card,
+div, span, p, h1, h2, h3, h4, h5, h6,
+header, main, footer, section {
+    cursor: none !important;
+}
+
+/* 悬浮状态也隐藏鼠标 */
+button:hover, a:hover, input:hover, 
+.nav-btn:hover, .content-card:hover, .feature-card:hover,
+*:hover, *:focus, *:active {
+    cursor: none !important;
+}
+
+/* 强制覆盖任何可能的鼠标样式 */
+html {
+    cursor: none !important;
+}
+
+html * {
+    cursor: none !important;
+}
+
+/* 背景粒子效果 */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    will-change: auto; /* 避免GPU加速影响 */
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: float 60s infinite linear; /* 超慢速背景粒子 - 1分钟 */
+    opacity: 0.6; /* 恢复可见度 */
+    will-change: auto; /* 避免不必要的GPU加速 */
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 主容器 */
+.main-container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 头部样式 */
+.header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.9) 0%, rgba(63, 81, 181, 0.7) 100%);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.logo-icon {
+    position: relative;
+}
+
+.hexagon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-accent);
+    position: relative;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    animation: pulse 2s infinite;
+    box-shadow: var(--shadow-glow);
+}
+
+.hexagon span {
+    transform: rotate(-45deg);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(124, 77, 255, 0.6);
+    }
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.gradient-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    background: var(--gradient-secondary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: -5px;
+}
+
+.subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+}
+
+/* 导航菜单 */
+.nav-menu {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+    color: var(--text-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    backdrop-filter: blur(10px);
+}
+
+.nav-btn:hover {
+    background: rgba(0, 188, 212, 0.2);
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-btn.active {
+    background: var(--gradient-secondary);
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-glow);
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    padding: var(--spacing-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 欢迎卡片 */
+.welcome-card {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.4) 0%, rgba(63, 81, 181, 0.2) 100%);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-lg);
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.welcome-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-sm);
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+/* 功能网格 */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.feature-card {
+    background: linear-gradient(135deg, rgba(63, 81, 181, 0.3) 0%, rgba(92, 107, 192, 0.1) 100%);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 188, 212, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.feature-card:hover::before {
+    left: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-glow);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--cyan);
+    text-align: center;
+}
+
+.feature-icon i {
+    filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.5));
+}
+
+.feature-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-stats {
+    color: var(--cyan);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* 区域标题 */
+.section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: var(--gradient-secondary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+/* 内容卡片网格 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.content-card {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.6) 0%, rgba(63, 81, 181, 0.3) 100%);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-secondary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover::after {
+    transform: scaleX(1);
+}
+
+.content-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: var(--cyan);
+    text-align: center;
+}
+
+.card-icon i {
+    filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.5));
+    transition: all 0.3s ease;
+}
+
+.content-card:hover .card-icon i {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(124, 77, 255, 0.6));
+}
+
+.card-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-xs);
+}
+
+.card-category {
+    background: var(--gradient-accent);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.card-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'Orbitron', monospace;
+}
+
+.difficulty {
+    background: var(--gradient-secondary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.card-description {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+/* 标签和功能 */
+.card-tags, .card-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.tag, .feature {
+    background: rgba(0, 188, 212, 0.2);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--cyan);
+    font-weight: 400;
+}
+
+/* 游戏卡片特殊样式 */
+.game-card {
+    position: relative;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-primary);
+    border-radius: var(--border-radius);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-card:hover::before {
+    opacity: 1;
+}
+
+/* 分类卡片特殊样式 */
+.category-card {
+    cursor: pointer;
+}
+
+.category-card .card-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.view-notes-btn {
+    color: var(--cyan);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .view-notes-btn {
+    color: var(--purple);
+    transform: translateX(5px);
+}
+
+/* 返回按钮 */
+.back-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 10px 20px;
+    color: var(--cyan);
+    font-size: 14px;
+    cursor: none !important;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--cyan);
+    transform: translateX(-3px);
+}
+
+/* 底部 */
+.footer {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.8) 0%, rgba(10, 14, 26, 0.9) 100%);
+    border-top: 1px solid rgba(0, 188, 212, 0.2);
+    padding: var(--spacing-lg);
+    text-align: center;
+    backdrop-filter: blur(20px);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+.footer-stats {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    color: var(--cyan);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+    
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding: var(--spacing-md);
+    }
+    
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .welcome-title {
+        font-size: 2rem;
+    }
+    
+    .gradient-text {
+        font-size: 1.5rem;
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-primary);
+}
+
+/* 加载动画 */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.loading {
+    background: linear-gradient(90deg, rgba(0, 188, 212, 0.1) 25%, rgba(0, 188, 212, 0.3) 50%, rgba(0, 188, 212, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* 悬浮效果 */
+.hover-glow {
+    transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+    filter: drop-shadow(0 0 15px rgba(0, 188, 212, 0.4));
+}
+
+/* 文字动画 */
+.typewriter {
+    overflow: hidden;
+    border-right: 2px solid var(--cyan);
+    white-space: nowrap;
+    animation: typewriter 3s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: var(--cyan);
+    }
+}
+
+/* 飞船鼠标效果 */
+.spaceship-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    pointer-events: none;
+    z-index: 9999;
+    filter: drop-shadow(0 0 50px rgba(0, 188, 212, 0.6));
+    will-change: transform;
+}
+
+.spaceship {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    will-change: transform;
+}
+
+.spaceship-body {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 40px rgba(0, 188, 212, 0.8));
+    animation: shipPulse 2s infinite ease-in-out;
+    z-index: 10; /* 确保火箭在离子粒子之上 */
+}
+
+.spaceship-body i {
+    font-size: 60px !important;
+    background: linear-gradient(45deg, var(--cyan) 0%, var(--light-blue) 50%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(0, 188, 212, 0.8));
+    text-shadow: 0 0 30px rgba(124, 77, 255, 0.6);
+    animation: rocketPulse 2s infinite ease-in-out;
+    transform: rotate(-45deg) !important; /* 修正Font Awesome火箭的45度倾斜 */
+    display: block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+
+@keyframes shipPulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 40px rgba(0, 188, 212, 0.8));
+    }
+    50% {
+        filter: drop-shadow(0 0 75px rgba(124, 77, 255, 0.9));
+    }
+}
+
+/* 火箭图标的脉冲效果 */
+@keyframes rocketPulse {
+    0%, 100% {
+        transform: rotate(-45deg) !important;
+        filter: drop-shadow(0 0 20px rgba(0, 188, 212, 0.8));
+        text-shadow: 0 0 30px rgba(124, 77, 255, 0.6);
+    }
+    50% {
+        transform: rotate(-45deg) !important;
+        filter: drop-shadow(0 0 35px rgba(124, 77, 255, 1));
+        text-shadow: 0 0 50px rgba(0, 188, 212, 0.9);
+    }
+}
+
+/* 离子喷射效果 */
+.ion-trail {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1; /* 确保离子粒子在火箭之下 */
+}
+
+.ion-particle {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: var(--cyan);
+    border-radius: 50%;
+    opacity: 0;
+    animation: ionTrail 0.5s ease-out forwards;
+    z-index: 1;
+}
+
+@keyframes ionTrail {
+    0% {
+        opacity: 1;
+        transform: translate(0, 75px) scale(1);
+        background: radial-gradient(circle, var(--cyan) 0%, transparent 70%);
+        box-shadow: 0 0 30px var(--cyan);
+    }
+    30% {
+        opacity: 0.9;
+        background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
+        box-shadow: 0 0 40px var(--purple);
+    }
+    70% {
+        opacity: 0.4;
+        background: radial-gradient(circle, var(--light-blue) 0%, transparent 70%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(0, 225px) scale(0.2);
+        background: radial-gradient(circle, var(--primary-blue) 0%, transparent 70%);
+    }
+}
+
+/* 加速状态效果 */
+.spaceship-accelerating .spaceship-body {
+    animation: shipAccelerate 0.3s ease-out, shipPulse 2s infinite ease-in-out;
+    filter: drop-shadow(0 0 75px rgba(0, 188, 212, 1)) drop-shadow(0 0 125px rgba(124, 77, 255, 0.8));
+}
+
+.spaceship-accelerating .spaceship-body i {
+    animation: rocketAccelerate 0.3s ease-out, rocketPulse 2s infinite ease-in-out;
+    font-size: 60px !important; /* 防止动画中大小变化 */
+}
+
+@keyframes shipAccelerate {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.3);
+        filter: drop-shadow(0 0 100px rgba(0, 188, 212, 1)) drop-shadow(0 0 150px rgba(124, 77, 255, 1));
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes rocketAccelerate {
+    0% {
+        transform: rotate(-45deg) !important;
+        filter: drop-shadow(0 0 20px rgba(0, 188, 212, 0.8));
+    }
+    50% {
+        transform: rotate(-45deg) !important;
+        filter: drop-shadow(0 0 40px rgba(124, 77, 255, 1));
+        text-shadow: 0 0 60px rgba(0, 188, 212, 1);
+    }
+    100% {
+        transform: rotate(-45deg) !important;
+        filter: drop-shadow(0 0 20px rgba(0, 188, 212, 0.8));
+    }
+}
+
+.spaceship-accelerating .ion-particle {
+    animation-duration: 0.2s;
+    width: 20px;
+    height: 20px;
+}
+
+/* 高速移动时的额外效果 */
+.spaceship-accelerating {
+    filter: drop-shadow(0 0 100px rgba(0, 188, 212, 0.9));
+}
+
+/* 高速移动时的尾迹效果 */
+.spaceship-trail {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 75px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 2; /* 尾迹在粒子之上，火箭之下 */
+}
+
+.spaceship-fast .spaceship-trail {
+    opacity: 0.8;
+    animation: trailGlow 0.1s ease-out;
+}
+
+@keyframes trailGlow {
+    0% {
+        height: 75px;
+        background: linear-gradient(to bottom, var(--cyan), transparent);
+    }
+    100% {
+        height: 125px;
+        background: linear-gradient(to bottom, var(--purple), var(--cyan), transparent);
+    }
+}

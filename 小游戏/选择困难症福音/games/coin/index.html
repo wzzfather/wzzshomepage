@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抛硬币 - 选择困难症福音</title>
+    <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/coin.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="../../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 返回主页
+            </a>
+            <h1><i class="fas fa-coins"></i> 抛硬币</h1>
+            <p>抛掷硬币，统计正反面频次</p>
+        </header>
+
+        <main class="main">
+            <div class="game-container">
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label for="coinCount">
+                            <i class="fas fa-layer-group"></i> 硬币数量：
+                        </label>
+                        <input type="number" id="coinCount" min="1" max="20" value="3">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="flipCount">
+                            <i class="fas fa-redo"></i> 抛投次数：
+                        </label>
+                        <input type="number" id="flipCount" min="1" max="100" value="1">
+                    </div>
+
+                    <button id="flipBtn" class="flip-btn">
+                        <i class="fas fa-hand-paper"></i> 抛掷硬币
+                    </button>
+
+                    <button id="resetBtn" class="reset-btn">
+                        <i class="fas fa-refresh"></i> 重置统计
+                    </button>
+
+                    <div class="statistics">
+                        <h3><i class="fas fa-chart-bar"></i> 统计信息</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">总抛投次数：</span>
+                            <span id="totalFlips" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">正面次数：</span>
+                            <span id="headsCount" class="stat-value heads">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">反面次数：</span>
+                            <span id="tailsCount" class="stat-value tails">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">正面比例：</span>
+                            <span id="headsPercentage" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">反面比例：</span>
+                            <span id="tailsPercentage" class="stat-value">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="coins-area">
+                    <div id="coinsContainer" class="coins-container">
+                        <!-- 硬币将在这里动态生成 -->
+                    </div>
+
+                    <div id="currentResult" class="current-result hidden">
+                        <h3><i class="fas fa-bullseye"></i> 本次结果</h3>
+                        <div class="result-summary">
+                            <div class="result-item">
+                                <span class="label">正面：</span>
+                                <span id="currentHeads" class="value heads">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">反面：</span>
+                                <span id="currentTails" class="value tails">0</span>
+                            </div>
+                        </div>
+                        <div class="result-details">
+                            <div class="details-label">详细结果：</div>
+                            <div id="resultDetails" class="details-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/coin.js"></script>
+</body>
+</html> 

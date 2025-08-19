@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Git 从暂存到分支管理再到上传仓库全流程笔记</title>
+    <link rel="stylesheet" href="note.css">
+</head>
+<body>
+
+<h1>Git 从暂存到分支管理再到上传仓库全流程笔记</h1>
+
+<p>本笔记适用于从 Git 初学到能管理分支和推送到远程仓库的全过程，涵盖工作区、暂存区、本地仓库、远程仓库之间的关系。</p>
+
+<hr>
+
+<h2>1. 基础概念</h2>
+
+<ul>
+    <li><b>工作区（Working Directory）</b>：你实际编辑代码的地方。</li>
+    <li><b>暂存区（Staging Area / Index）</b>：用来临时保存将要提交的文件状态。</li>
+    <li><b>本地仓库（Local Repository）</b>：保存在你电脑上的版本历史记录。</li>
+    <li><b>远程仓库（Remote Repository）</b>：比如 GitHub、GitLab、Gitee 上的仓库，方便团队协作。</li>
+</ul>
+
+<div class="tip">
+    理解这几个区域很重要：<br>
+    <b>工作区</b> → <code>git add</code> → <b>暂存区</b> → <code>git commit</code> → <b>本地仓库</b> → <code>git push</code> → <b>远程仓库</b>
+</div>
+
+<hr>
+
+<h2>2. 创建与初始化仓库</h2>
+
+<h3>① 创建新仓库</h3>
+<pre>
+git init
+</pre>
+<p>作用：在当前文件夹初始化一个本地 Git 仓库，会生成一个隐藏的 <code>.git</code> 文件夹。</p>
+
+<h3>② 克隆已有仓库</h3>
+<pre>
+git clone &lt;仓库地址&gt;
+# 示例
+git clone https://github.com/user/project.git
+</pre>
+<p>作用：将远程仓库完整下载到本地，并自动设置好远程地址。</p>
+
+<hr>
+
+<h2>3. 暂存文件（Stage）</h2>
+
+<p>当你修改了文件，需要先放到暂存区：</p>
+<pre>
+git add &lt;文件名&gt;         # 添加单个文件
+git add file1 file2      # 添加多个文件
+git add .                # 添加当前目录下所有修改文件
+</pre>
+
+<div class="warn">
+    注意：<code>git add .</code> 会添加所有修改，包括删除和新建的文件。提交前可以用 <code>git status</code> 检查。
+</div>
+
+<hr>
+
+<h2>4. 提交到本地仓库（Commit）</h2>
+
+<pre>
+git commit -m "提交说明"
+</pre>
+<p>作用：把暂存区的内容提交到本地仓库，并生成一个快照版本。</p>
+
+<div class="tip">
+    提交说明最好简洁明了，如：<br>
+    <code>git commit -m "修复登录页面的按钮点击事件"</code>
+</div>
+
+<hr>
+
+<h2>5. 查看状态与日志</h2>
+
+<pre>
+git status        # 查看当前文件修改状态
+git log           # 查看提交历史
+git log --oneline # 精简显示提交历史
+</pre>
+
+<hr>
+
+<h2>6. 分支管理</h2>
+
+<p>分支（Branch）是 Git 中同时推进多个功能开发的工具。</p>
+
+<h3>① 查看分支</h3>
+<pre>
+git branch
+</pre>
+
+<h3>② 创建新分支</h3>
+<pre>
+git branch &lt;分支名&gt;
+</pre>
+
+<h3>③ 切换分支</h3>
+<pre>
+git checkout &lt;分支名&gt;
+# 或新语法
+git switch &lt;分支名&gt;
+</pre>
+
+<h3>④ 创建并切换到新分支</h3>
+<pre>
+git checkout -b &lt;分支名&gt;
+# 或
+git switch -c &lt;分支名&gt;
+</pre>
+
+<h3>⑤ 合并分支</h3>
+<pre>
+git checkout main      # 切到主分支
+git merge feature-1    # 合并 feature-1 到 main
+</pre>
+
+<h3>⑥ 删除分支</h3>
+<pre>
+git branch -d &lt;分支名&gt; # 删除已合并的分支
+git branch -D &lt;分支名&gt; # 强制删除
+</pre>
+
+<hr>
+
+<h2>7. 推送到远程仓库（Push）</h2>
+
+<pre>
+git push origin &lt;分支名&gt;
+# 示例
+git push origin main
+</pre>
+<p>作用：把本地分支提交推送到远程仓库的对应分支。</p>
+
+<div class="warn">
+    如果是第一次推送新分支，需要：
+<pre>
+git push -u origin &lt;分支名&gt;
+</pre>
+    <small>-u 表示以后推送/拉取可以直接用 <code>git push</code> 或 <code>git pull</code>。</small>
+</div>
+
+<hr>
+
+<h2>8. 从远程仓库拉取更新</h2>
+
+<pre>
+git pull origin &lt;分支名&gt;
+</pre>
+<p>作用：拉取远程分支最新提交，并自动合并到本地。</p>
+
+<hr>
+
+<h2>9. 查看远程仓库信息</h2>
+
+<pre>
+git remote -v         # 查看远程仓库地址
+git remote add origin &lt;仓库地址&gt;  # 添加远程仓库
+git remote remove origin          # 移除远程仓库
+</pre>
+
+<hr>
+
+<h2>10. 全流程示例</h2>
+
+<pre>
+# 1. 初始化仓库
+git init
+
+# 2. 创建文件并暂存
+git add index.html
+
+# 3. 提交到本地仓库
+git commit -m "初始化项目"
+
+# 4. 创建新分支
+git switch -c dev
+
+# 5. 在 dev 分支修改代码并提交
+git add style.css
+git commit -m "添加样式文件"
+
+# 6. 合并分支
+git switch main
+git merge dev
+
+# 7. 推送到远程仓库
+git push -u origin main
+</pre>
+
+<hr>
+
+<h2>11. Git 数据流动示意</h2>
+
+<p>工作区 → 暂存区 → 本地仓库 → 远程仓库</p>
+<pre>
+[工作区] -- git add --> [暂存区] -- git commit --> [本地仓库] -- git push --> [远程仓库]
+</pre>
+
+</body>
+</html>

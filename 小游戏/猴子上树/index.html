@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猴子爬树吃椰子</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 开始界面 -->
+        <div class="screen start-screen" id="startScreen">
+            <h1>🐒 猴子爬树吃椰子 🥥</h1>
+            <p>帮助猴子收集椰子，挑战更高关卡！</p>
+            <button id="startButton" class="btn start-button">开始游戏</button>
+            <div class="game-instructions">
+                <h3>游戏说明</h3>
+                <ul>
+                    <li>按住鼠标或触屏蓄力，松开跳跃</li>
+                    <li>点击树干可切换树木</li>
+                    <li>收集所有椰子进入下一关</li>
+                    <li>时间耗尽则游戏结束</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div class="screen game-screen" id="gameScreen" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="info-item">
+                        <span class="label">得分:</span>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">关卡:</span>
+                        <span id="level">1</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">时间:</span>
+                        <span id="time">60</span>
+                    </div>
+                </div>
+                <button id="pauseButton" class="btn pause-button">⏸️</button>
+                <button id="debugButton" class="btn" style="background: #666; color: white; padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-left: 0.5rem;">调试</button>
+            </div>
+
+            <div class="game-area" id="gameArea">
+                <!-- 游戏元素将通过JavaScript动态生成 -->
+                <!-- 调试信息显示区域 -->
+                <div id="debugInfo" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 1000; display: none;">
+                    <div>游戏状态: <span id="debugGameState">-</span></div>
+                    <div>蓄力状态: <span id="debugCharging">-</span></div>
+                    <div>蓄力值: <span id="debugPower">-</span></div>
+                    <div>跳跃状态: <span id="debugJumping">-</span></div>
+                    <div>惩罚信息: <span id="debugPunishment">-</span></div>
+                </div>
+            </div>
+
+            <div class="power-container">
+                <div class="power-label">蓄力</div>
+                <div class="power-bar">
+                    <div class="power-fill" id="powerFill"></div>
+                </div>
+                <div class="power-instructions">按住蓄力，松开跳跃</div>
+            </div>
+        </div>
+
+        <!-- 暂停界面 -->
+        <div class="screen pause-screen" id="pauseScreen" style="display: none;">
+            <div class="overlay"></div>
+            <div class="popup">
+                <h2>游戏暂停</h2>
+                <p>当前得分: <span id="pauseScore">0</span></p>
+                <div class="button-group">
+                    <button id="resumeButton" class="btn resume-button">继续游戏</button>
+                    <button id="restartButton" class="btn restart-button">重新开始</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏结束界面 -->
+        <div class="screen game-over-screen" id="gameOverScreen" style="display: none;">
+            <div class="overlay"></div>
+            <div class="popup">
+                <h2>游戏结束</h2>
+                <p>最终得分: <span id="finalScore">0</span></p>
+                <p>达到关卡: <span id="finalLevel">1</span></p>
+                <div class="button-group">
+                    <button id="playAgainButton" class="btn play-again-button">再玩一次</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关卡完成界面 -->
+        <div class="screen level-complete-screen" id="levelCompleteScreen" style="display: none;">
+            <div class="overlay"></div>
+            <div class="popup">
+                <h2>关卡完成!</h2>
+                <p>得分: <span id="levelScore">0</span></p>
+                <p>奖励时间: +5秒</p>
+                <button id="nextLevelButton" class="btn next-level-button">下一关</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音效 -->
+    <audio id="jumpSound" src="sounds/jump.mp3" preload="auto"></audio>
+    <audio id="collectSound" src="sounds/collect.mp3" preload="auto"></audio>
+    <audio id="levelUpSound" src="sounds/levelup.mp3" preload="auto"></audio>
+    <audio id="gameOverSound" src="sounds/gameover.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

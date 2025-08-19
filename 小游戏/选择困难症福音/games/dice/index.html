@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投骰子 - 选择困难症福音</title>
+    <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/dice.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="../../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 返回主页
+            </a>
+            <h1><i class="fas fa-dice-six"></i> 投骰子</h1>
+            <p>投掷六面骰子，计算点数之和</p>
+        </header>
+
+        <main class="main">
+            <div class="game-container">
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label for="diceCount">
+                            <i class="fas fa-dice"></i> 骰子数量：
+                        </label>
+                        <input type="number" id="diceCount" min="1" max="10" value="2">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="targetSum">
+                            <i class="fas fa-bullseye"></i> 目标点数：
+                        </label>
+                        <input type="number" id="targetSum" min="1" max="60" value="7">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="condition">
+                            <i class="fas fa-cog"></i> 判定条件：
+                        </label>
+                        <select id="condition">
+                            <option value="equal">等于目标点数</option>
+                            <option value="greater">大于目标点数</option>
+                            <option value="less">小于目标点数</option>
+                            <option value="greaterEqual">大于等于目标点数</option>
+                            <option value="lessEqual">小于等于目标点数</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="successAction">
+                            <i class="fas fa-check-circle"></i> 成功时执行：
+                        </label>
+                        <input type="text" id="successAction" placeholder="例如：去看电影" maxlength="50">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="failAction">
+                            <i class="fas fa-times-circle"></i> 失败时执行：
+                        </label>
+                        <input type="text" id="failAction" placeholder="例如：在家休息" maxlength="50">
+                    </div>
+
+                    <button id="rollBtn" class="roll-btn">
+                        <i class="fas fa-dice"></i> 投掷骰子
+                    </button>
+                </div>
+
+                <div class="dice-area">
+                    <div id="diceContainer" class="dice-container">
+                        <!-- 骰子将在这里动态生成 -->
+                    </div>
+
+                    <div id="results" class="results hidden">
+                        <div class="result-item">
+                            <span class="label">各骰子点数：</span>
+                            <span id="individualResults" class="value"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">点数总和：</span>
+                            <span id="totalSum" class="value total"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">判定结果：</span>
+                            <span id="judgmentResult" class="value judgment"></span>
+                        </div>
+                        <div id="actionResult" class="action-result">
+                            <i class="fas fa-star"></i>
+                            <span id="actionText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dice.js"></script>
+</body>
+</html> 

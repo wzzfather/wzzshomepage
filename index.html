@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人空间 - 博客与游戏</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="assets/fonts/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- 飞船鼠标 -->
+        <div class="spaceship-cursor" ref="spaceshipCursor" :class="spaceshipClasses">
+            <div class="spaceship" :style="spaceshipRotation">
+                <div class="spaceship-body">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="spaceship-trail"></div>
+                <div class="ion-trail" ref="ionTrail"></div>
+            </div>
+        </div>
+        
+        <!-- 背景粒子效果 - 移出Vue管理避免重新渲染 -->
+        <div class="particles-container" id="staticParticles">
+            <!-- 粒子将通过JavaScript静态创建 -->
+        </div>
+        
+        <!-- 主容器 -->
+        <div class="main-container">
+            <!-- 头部 -->
+            <header class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <div class="hexagon">
+                            <span>{{ currentTime }}</span>
+                        </div>
+                    </div>
+                    <h1 class="logo-text">
+                        <span class="gradient-text">个人空间</span>
+                        <span class="subtitle">PERSONAL SPACE</span>
+                    </h1>
+                </div>
+                
+                <nav class="nav-menu">
+                                         <button 
+                         class="nav-btn" 
+                         :class="{ active: activeSection === 'home' }"
+                         @click="setActiveSection('home')"
+                     >
+                         <i class="fas fa-home nav-icon"></i>
+                         首页
+                     </button>
+                     <button 
+                         class="nav-btn" 
+                         :class="{ active: activeSection === 'blog' }"
+                         @click="setActiveSection('blog')"
+                     >
+                         <i class="fas fa-book nav-icon"></i>
+                         博客笔记
+                     </button>
+                     <button 
+                         class="nav-btn" 
+                         :class="{ active: activeSection === 'games' }"
+                         @click="setActiveSection('games')"
+                     >
+                         <i class="fas fa-gamepad nav-icon"></i>
+                         小游戏
+                     </button>
+                </nav>
+            </header>
+
+            <!-- 主内容区 -->
+            <main class="main-content">
+                <!-- 首页 -->
+                <section v-if="activeSection === 'home'" class="section home-section">
+                    <div class="welcome-card">
+                        <div class="welcome-header">
+                            <h2 class="welcome-title">欢迎来到我的数字空间</h2>
+                            <p class="welcome-subtitle">探索知识与娱乐的完美结合</p>
+                        </div>
+                        
+                                                 <div class="feature-grid">
+                             <div class="feature-card" @click="setActiveSection('blog')">
+                                 <div class="feature-icon">
+                                     <i class="fas fa-book-open"></i>
+                                 </div>
+                                 <h3>技术博客</h3>
+                                 <p>记录学习心得与技术分享</p>
+                                 <div class="feature-stats">
+                                     <span>{{ blogStats.count }} 篇笔记</span>
+                                 </div>
+                             </div>
+                             
+                             <div class="feature-card" @click="setActiveSection('games')">
+                                 <div class="feature-icon">
+                                     <i class="fas fa-rocket"></i>
+                                 </div>
+                                 <h3>休闲游戏</h3>
+                                 <p>放松身心的小游戏合集</p>
+                                 <div class="feature-stats">
+                                     <span>{{ gameStats.count }} 个游戏</span>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                </section>
+
+                                <!-- 博客笔记 -->
+                <section v-if="activeSection === 'blog'" class="section blog-section">
+                    <!-- 分类列表视图 -->
+                    <div v-if="!selectedCategory">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-book"></i> 技术博客</h2>
+                            <p class="section-subtitle">似我，非我</p>
+                        </div>
+                        
+                        <div class="cards-grid">
+                            <div 
+                                class="content-card category-card" 
+                                v-for="category in blogCategories" 
+                                :key="category.id"
+                                @click="selectCategory(category)"
+                            >
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <i :class="category.icon"></i>
+                                    </div>
+                                    <div class="card-meta">
+                                        <span class="card-category">{{ category.notes.length }} 篇笔记</span>
+                                    </div>
+                                </div>
+                                <h3 class="card-title">{{ category.title }}</h3>
+                                <p class="card-description">{{ category.description }}</p>
+                                <div class="card-footer">
+                                    <span class="view-notes-btn">查看笔记 <i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 具体分类的笔记列表 -->
+                    <div v-if="selectedCategory">
+                        <div class="section-header">
+                            <button class="back-btn" @click="backToCategories()">
+                                <i class="fas fa-arrow-left"></i> 返回分类
+                            </button>
+                            <h2 class="section-title">
+                                <i :class="selectedCategory.icon"></i> {{ selectedCategory.title }}
+                            </h2>
+                            <p class="section-subtitle">{{ selectedCategory.description }}</p>
+                        </div>
+                        
+                        <div class="cards-grid">
+                            <div 
+                                class="content-card" 
+                                v-for="note in selectedCategory.notes" 
+                                :key="note.id"
+                                @click="openNote(note)"
+                            >
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <i :class="note.icon"></i>
+                                    </div>
+                                    <div class="card-meta">
+                                        <span class="card-date">{{ note.date }}</span>
+                                    </div>
+                                </div>
+                                <h3 class="card-title">{{ note.title }}</h3>
+                                <p class="card-description">{{ note.description }}</p>
+                                <div class="card-tags">
+                                    <span class="tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 小游戏 -->
+                <section v-if="activeSection === 'games'" class="section games-section">
+                                         <div class="section-header">
+                         <h2 class="section-title"><i class="fas fa-gamepad"></i> 游戏中心</h2>
+                         <p class="section-subtitle">搞事情</p>
+                     </div>
+                    
+                    <div class="cards-grid">
+                                                 <div 
+                             class="content-card game-card" 
+                             v-for="game in games" 
+                             :key="game.id"
+                             @click="openGame(game)"
+                         >
+                             <div class="card-header">
+                                 <div class="card-icon">
+                                     <i :class="game.icon"></i>
+                                 </div>
+                                 <div class="card-meta">
+                                     <span class="card-category">{{ game.category }}</span>
+                                     <span class="difficulty">{{ game.difficulty }}</span>
+                                 </div>
+                             </div>
+                            <h3 class="card-title">{{ game.title }}</h3>
+                            <p class="card-description">{{ game.description }}</p>
+                            <div class="card-features">
+                                <span class="feature" v-for="feature in game.features" :key="feature">{{ feature }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- 底部 -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <p>&copy; 2025 魏子政的个人空间 | 探索 · 学习 · 搞事情</p>
+                    <div class="footer-stats">
+                        <span>运行时间: {{ formatUptime(uptime) }}</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html> 
