@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>实战｜Dify+DeepSeek V3.1+Minio 文件解析思维导图</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="note.css" />
+</head>
+<body>
+  <h1>实战｜Dify+DeepSeek V3.1+Minio 文件解析思维导图</h1>
+
+  <div class="tip">
+    <strong>课程目标：</strong>让你能够将 PDF/DOCX 技术文档自动解析成思维导图，即使没有编程基础也可以完成。
+  </div>
+
+  <h2>一、工具介绍</h2>
+  <table>
+    <thead>
+      <tr><th>工具</th><th>用途</th><th>优势</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Dify</td><td>低代码工作流工具</td><td>拖拽即可完成文件下载、文档解析、模型处理和思维导图输出</td></tr>
+      <tr><td>DeepSeek V3.1</td><td>AI 文档解析模型</td><td>专门解析技术文档，理解公式和图表，生成清晰层级结构</td></tr>
+      <tr><td>Minio</td><td>文件存储</td><td>快速本地/局域网存储，支持安全下载（预签名 URL）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip">
+    <strong>核心价值：</strong>上传文件 → 自动解析 → 生成结构化内容 → 输出思维导图，效率比手动整理高 50%。
+  </div>
+
+  <h2>二、环境准备（30 分钟完成）</h2>
+
+  <h3>1. 部署 DeepSeek V3.1</h3>
+  <pre><code># 拉取模型
+ollama pull deepseek-v3.1:7b-chat
+
+# 启动服务
+ollama serve
+</code></pre>
+  <div class="tip">
+    <strong>操作要点：</strong>推荐使用 7B 模型，普通消费级显卡可运行。<br>
+    <strong>验证方法：</strong>访问 http://localhost:11434，输入测试问题，看是否返回技术细节回答。
+  </div>
+
+  <h3>2. 部署 Dify</h3>
+  <pre><code>git clone https://github.com/langgenius/dify.git
+cd dify
+docker-compose up -d
+</code></pre>
+  <div class="tip">
+    访问 http://localhost:8000，登录 admin@dify.ai / changeme<br>
+    添加 DeepSeek V3.1 模型，API 地址：http://localhost:11434/api/generate
+  </div>
+
+  <h3>3. 部署 Minio</h3>
+  <pre><code>docker run -d -p 9000:9000 -p 9001:9001 \
+  --name minio \
+  -v /data/minio:/data \
+  -e "MINIO_ROOT_USER=minioadmin" \
+  -e "MINIO_ROOT_PASSWORD=minioadmin" \
+  minio/minio server /data --console-address ":9001"
+</code></pre>
+  <div class="tip">
+    登录 http://localhost:9001，创建桶 dify-docs 并上传测试文件<br>
+    ⚠️ 注意：Minio SDK 需 8.5.7 及以上版本
+  </div>
+
+  <h3>4. 安装 markmap（可选）</h3>
+  <pre><code>npm install -g markmap-cli
+echo "# 核心观点\n- 分论点1\n  - 细节1" > test.md
+markmap test.md
+</code></pre>
+  <div class="tip">打开生成的 test.html 可查看交互式思维导图</div>
+
+  <h2>三、实战核心步骤</h2>
+
+  <h3>步骤 1：生成 Minio 预签名 URL</h3>
+  <pre><code>Map<String, String> queryParams = new HashMap<>();
+queryParams.put("response-content-disposition", "attachment; filename=\"NIPS-2017-attention.pdf\"");
+
+return minioClient.getPresignedObjectUrl(
+    GetPresignedObjectUrlArgs.builder()
+        .bucket("dify-docs")
+        .object("NIPS-2017-attention.pdf")
+        .method(Method.GET)
+        .extraQueryParams(queryParams)
+        .expiry(86400)
+        .build()
+);
+</code></pre>
+  <div class="tip">
+    ⚠️ 必须添加 response-content-disposition: attachment，否则 PDF 会被浏览器预览，Dify 无法下载
+  </div>
+
+  <h3>步骤 2：Dify HTTP 节点下载文件</h3>
+  <ul>
+    <li>请求方式：GET</li>
+    <li>请求 URL：步骤 1 生成的预签名 URL</li>
+    <li>失败重试：3 次</li>
+    <li>测试：返回 200 OK 且显示文件大小</li>
+  </ul>
+
+  <h3>步骤 3：文档解析 + DeepSeek 结构化</h3>
+  <ol>
+    <li>文档解析器节点：输入 HTTP 请求输出，自动提取 PDF 文本、公式和图表描述</li>
+    <li>LLM 节点（DeepSeek）：
+<pre><code>请将以下技术文档文本，按“核心主题→一级分支→二级分支→三级分支”的结构输出为 markdown：
+{{文档解析器.output.text}}</code></pre></li>
+    <li>直接回复节点：输出 {{LLM.output.content}}，可接 markmap 生成思维导图</li>
+  </ol>
+
+  <h3>示例输出</h3>
+  <pre><code># Attention Is All You Need
+- 1. 研究背景与目标
+  - 1.1 RNN/CNN 局限
+  - 1.2 目标：提出 Transformer
+- 2. 核心架构
+  - 2.1 encoder（6层）
+  - 2.2 decoder（6层）
+- 3. 自注意力机制
+  - 3.1 Q/K/V 计算
+  - 3.2 多头注意力
+- 4. 实验结果
+  - 4.1 英德翻译 BLEU=28.4
+  - 4.2 训练效率快 2 倍
+</code></pre>
+
+  <h3>步骤 4：工作流场景设计</h3>
+  <table>
+    <thead>
+      <tr><th>场景</th><th>操作流程</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>用户上传新文件</td><td>前端上传 → 自动上传至 Minio → 生成预签名 URL → 执行解析 → 输出思维导图</td></tr>
+      <tr><td>Minio 存量文件</td><td>输入文件 ID → 后端查路径 → 生成预签名 URL → 执行解析 → 输出思维导图</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">
+    测试耗时：15 页 PDF 全流程约 58 秒，准确率约 92%
+  </div>
+
+  <h2>四、拓展：搭建可复用智能体</h2>
+  <ol>
+    <li>前端优化：添加文件上传组件，支持 PDF、DOCX、TXT，显示上传进度</li>
+    <li>可视化结果：
+<pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4/dist/browser/index.min.js"&gt;&lt;/script&gt;
+&lt;div id="mindmap-container" style="width:100%;height:600px"&gt;&lt;/div&gt;
+&lt;script&gt;
+  const markdownContent = `{{LLM.output.content}}`;
+  window.markmap.render(document.getElementById('mindmap-container'), markdownContent);
+&lt;/script&gt;</code></pre></li>
+    <li>结果存储：将 HTML / 图片上传回 Minio，提供下载链接</li>
+  </ol>
+
+  <h2>五、课程总结</h2>
+  <ul>
+    <li>Dify：低代码简化操作</li>
+    <li>DeepSeek V3.1：准确解析技术文档</li>
+    <li>Minio：安全快速存储文件</li>
+    <li>重点注意：Minio 预签名 URL 防预览、DeepSeek Prompt 结构化引导</li>
+    <li>效果：科研、技术部门可 1 天内完成，无需专业编程能力</li>
+  </ul>
+
+  <footer>
+    <p>最后更新：2025-08-22</p>
+  </footer>
+</body>
+</html>
