@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Linux 新建分区自动挂载（btrfs & ntfs-3g）操作笔记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 外部样式表（已提供） -->
+  <link rel="stylesheet" href="note.css" />
+</head>
+<body>
+  <h1>Linux 新建分区自动挂载：完整流程与排错</h1>
+
+  <div class="tip">
+    <strong>结论先行：</strong>已将 <code>/dev/nvme1n1p9</code>（<code>btrfs</code>）自动挂载到 <code>/mnt/bazziteExtension</code>；同时修复了 <code>/etc/fstab</code> 中 NTFS 项目的换行错误。
+  </div>
+
+  <h2>1. 目标</h2>
+  <ul>
+    <li>将 btrfs 分区（UUID：<code>0d5f7a7d-776f-4757-b9fe-c7b71d844125</code>）自动挂载到 <code>/mnt/bazziteExtension</code>。</li>
+    <li>规范并修正 <code>/etc/fstab</code>，避免启动时报错。</li>
+  </ul>
+
+  <h2>2. 核心概念</h2>
+  <ul>
+    <li><strong>分区（partition）</strong>：把硬盘分成几块独立区域，好比把一大箱子分隔成多个小格子。</li>
+    <li><strong>文件系统（filesystem）</strong>：数据在分区里摆放的规则，如 <code>ext4</code>、<code>btrfs</code>、<code>ntfs</code>。</li>
+    <li><strong>挂载（mount）</strong>：把分区“接到”某个目录，让你能从该目录看到分区里的文件。</li>
+    <li><strong>挂载点（mount point）</strong>：用于“接线”的目录，例如 <code>/mnt/bazziteExtension</code>。</li>
+    <li><strong>UUID</strong>：分区的“身份证号”，比 <code>/dev/sda1</code> 这类名字更稳定，不会因插拔设备而变化。</li>
+    <li><strong>/etc/fstab</strong>：系统启动时读的“自动挂载清单”，一行代表一条挂载规则。</li>
+    <li><strong>btrfs 子卷（subvolume）</strong>：btrfs 的“子仓库”。默认挂载根子卷，如需挂特定子卷要加 <code>subvol=@xxx</code> 参数。</li>
+  </ul>
+
+  <h2>3. 实操步骤</h2>
+
+  <h3>3.1 查询分区信息</h3>
+  <pre><code>sudo blkid
+# 结果示例：
+# /dev/nvme1n1p9: UUID="0d5f7a7d-776f-4757-b9fe-c7b71d844125" TYPE="btrfs" ...
+</code></pre>
+
+  <h3>3.2 创建挂载点</h3>
+  <pre><code>sudo mkdir -p /mnt/bazziteExtension
+</code></pre>
+
+  <h3>3.3 编辑 /etc/fstab（新增 btrfs 自动挂载项）</h3>
+  <pre><code>sudo nano /etc/fstab
+
+# 追加一行（btrfs）：
+UUID=0d5f7a7d-776f-4757-b9fe-c7b71d844125   /mnt/bazziteExtension   btrfs   defaults,noatime   0   0
+</code></pre>
+
+  <div class="tip">
+    <strong>参数小抄：</strong>
+    <ul>
+      <li><code>defaults</code>：使用系统推荐的默认挂载选项。</li>
+      <li><code>noatime</code>：不更新访问时间戳，减少磁盘写入。</li>
+      <li>最后的 <code>0 0</code>：不做 dump 备份 & 不做开机 fsck 检查（btrfs 自带校验）。</li>
+    </ul>
+  </div>
+
+  <h3>3.4 修复 fstab 中 NTFS 损坏的换行</h3>
+  <p>原来错误地分成了两行，导致系统把 <code>2</code> 识别成“文件系统类型”，出现 <code>unknown filesystem type '2'</code>。</p>
+  <pre><code># ❌ 错误（被换行拆开）
+UUID=200515B519BAAE18 /var/mnt/windows/nvme0_Data1 ntfs-3g
+rw,uid=1000,gid=1000,dmask=022,fmask=133,noatime,windows_names 0 2
+
+# ✅ 正确（合并为一行）
+UUID=200515B519BAAE18 /var/mnt/windows/nvme0_Data1 ntfs-3g rw,uid=1000,gid=1000,dmask=022,fmask=133,noatime,windows_names 0 2
+</code></pre>
+
+  <h3>3.5 让 systemd 重新读取配置并测试挂载</h3>
+  <pre><code>sudo systemctl daemon-reexec
+sudo mount -a
+df -h | grep bazziteExtension
+</code></pre>
+
+  <div class="tip">
+    如果没有报错，并能看到 <code>/mnt/bazziteExtension</code> 的挂载记录，说明配置成功。
+  </div>
+
+  <h2>4. fstab 每列含义一览</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>列序</th>
+        <th>含义</th>
+        <th>示例</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>设备/标识</td>
+        <td><code>UUID=0d5f7a7d-...</code></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>挂载点</td>
+        <td><code>/mnt/bazziteExtension</code></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>文件系统类型</td>
+        <td><code>btrfs</code> 或 <code>ntfs-3g</code></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>挂载参数</td>
+        <td><code>defaults,noatime</code></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>dump 备份</td>
+        <td><code>0</code>（一般填 0）</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>开机 fsck 顺序</td>
+        <td><code>0</code>（btrfs 通常 0；ext4 根分区常为 1，其他为 2）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. 最终关键片段（可直接复用）</h2>
+  <pre><code># --- btrfs 数据分区 ---
+UUID=0d5f7a7d-776f-4757-b9fe-c7b71d844125   /mnt/bazziteExtension   btrfs   defaults,noatime   0   0
+
+# --- NTFS 数据分区（修复后，务必同一行） ---
+UUID=200515B519BAAE18 /var/mnt/windows/nvme0_Data1 ntfs-3g rw,uid=1000,gid=1000,dmask=022,fmask=133,noatime,windows_names 0 2
+</code></pre>
+
+  <h2>6. 常见坑与排错</h2>
+  <ul>
+    <li><strong>规则换行</strong>：<span class="warn">fstab 每条规则必须在同一行</span>。多一行就会把数字当文件系统类型，报错 <code>unknown filesystem type '2'</code>。</li>
+    <li><strong>挂载点不存在</strong>：先 <code>mkdir -p</code> 创建目录，否则 <code>mount -a</code> 失败。</li>
+    <li><strong>systemd 未重载</strong>：修改后执行 <code>systemctl daemon-reexec</code> 或 <code>daemon-reload</code>。</li>
+    <li><strong>被桌面自动挂载到 /var/mnt/...</strong>：请先 <code>umount</code> 再用 <code>fstab</code> 指定的路径挂载。</li>
+    <li><strong>btrfs 子卷</strong>：若需挂特定子卷，参数示例：<code>...,subvol=@home</code>。</li>
+  </ul>
+
+  <h2>7. 验证清单（逐条对勾）</h2>
+  <ul>
+    <li>用 <code>blkid</code> 拿到正确的 <code>UUID</code> ✅</li>
+    <li>创建挂载点目录 ✅</li>
+    <li><code>/etc/fstab</code> 新增 btrfs 项且参数正确 ✅</li>
+    <li>修复 NTFS 项“同一行”✅</li>
+    <li><code>systemctl daemon-reexec</code> ✅</li>
+    <li><code>mount -a</code> 无报错，<code>df -h</code> 显示到目标路径 ✅</li>
+  </ul>
+
+  <footer>
+    <p>最后更新：2025-08-13 </p>
+  </footer>
+</body>
+</html>

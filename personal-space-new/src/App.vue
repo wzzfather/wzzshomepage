@@ -1,41 +1,22 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue'
-
-// 定义类型接口
-interface Note {
-  id: number
-  title: string
-  description: string
-  icon: string
-  date: string
-  tags: string[]
-  path: string
-}
-
-interface Category {
-  id: string
-  title: string
-  icon: string
-  description: string
-  notes: Note[]
-}
-
-interface Game {
-  id: number
-  title: string
-  description: string
-  category: string
-  icon: string
-  difficulty: string
-  features: string[]
-  path: string
-}
+import { ref, reactive, onMounted, nextTick, computed, watch } from 'vue'
+import { contentService, type Note, type Category, type Game } from './services/contentService'
 
 // 响应式数据
 const activeSection = ref('home')
 const currentTime = ref('00:00')
 const uptime = ref(0)
 const selectedCategory = ref<Category | null>(null)
+const isLoading = ref(true)
+const refreshing = ref(false)
+
+// 动态布局相关数据
+const layoutConfig = reactive({
+  cardColumns: 'auto-fill', // auto-fill, auto-fit, 或固定数量
+  cardMinWidth: 350, // 卡片最小宽度
+  adaptiveGrid: true, // 是否启用自适应网格
+  animateChanges: true // 是否启用变化动画
+})
 
 // 飞船鼠标相关数据
 const spaceshipCursor = ref<HTMLElement>()
@@ -60,80 +41,185 @@ const gameStats = reactive({
   count: 0
 })
 
-// 博客笔记数据
-const blogCategories = reactive<Category[]>([
-  {
-    id: 'git',
-    title: 'Git版本管理',
-    icon: 'fas fa-code-branch',
-    description: '版本控制系统学习笔记',
-    notes: [
-      {
-        id: 1,
-        title: 'Git 版本管理完整指南',
-        description: '从基础操作到分支管理，全面掌握Git版本控制系统的使用方法和最佳实践。',
-        icon: 'fas fa-code-branch',
-        date: '2024-01',
-        tags: ['Git', '版本控制', '协作开发'],
-        path: '笔记/git版本管理/git操作笔记.html'
-      }
-    ]
-  },
-  {
-    id: 'linux',
-    title: 'Linux系统使用心得',
-    icon: 'fab fa-linux',
-    description: 'Linux系统管理和工具使用经验',
-    notes: [
-      {
-        id: 2,
-        title: 'Linux 分区挂载实战',
-        description: '详细记录Linux系统中新建分区和自动挂载的完整流程，包含btrfs和ntfs文件系统。',
-        icon: 'fas fa-hdd',
-        date: '2024-01',
-        tags: ['Linux', '分区', '挂载', 'btrfs'],
-        path: '笔记/linux系统使用心得/linux系统挂载新分区笔记.html'
-      },
-      {
-        id: 3,
-        title: 'Nano 编辑器使用技巧',
-        description: '掌握Nano文本编辑器的常用操作和快捷键，提高命令行文本编辑效率。',
-        icon: 'fas fa-terminal',
-        date: '2024-01',
-        tags: ['Nano', '编辑器', '命令行'],
-        path: '笔记/linux系统使用心得/nano常用操作.html'
-      }
-    ]
-  }
-])
+// 动态内容数据
+const blogCategories = reactive<Category[]>([])
+const games = reactive<Game[]>([])
 
-// 游戏数据
-const games = reactive<Game[]>([
-  {
-    id: 1,
-    title: '猴子爬树吃椰子',
-    description: '帮助可爱的猴子收集椰子，挑战更高关卡！考验你的时机把握和策略规划能力。',
-    category: '动作游戏',
-    icon: 'fas fa-tree',
-    difficulty: '简单',
-    features: ['关卡挑战', '时间限制', '技巧操作'],
-    path: '小游戏/猴子上树/index.html'
-  },
-  {
-    id: 2,
-    title: '选择困难症福音',
-    description: '随机选择工具合集，包含投骰子、幸运转盘、抛硬币等多种随机决策工具，帮你解决选择困难症。',
-    category: '工具合集',
-    icon: 'fas fa-dice',
-    difficulty: '简单',
-    features: ['投骰子', '幸运转盘', '抛硬币', '随机决策'],
-    path: '小游戏/选择困难症福音/index.html'
+// 动态样式计算
+const dynamicGridStyle = computed(() => {
+  const itemCount = getCurrentItemCount()
+  
+  // 根据内容数量动态调整布局
+  if (layoutConfig.adaptiveGrid) {
+    if (itemCount === 1) {
+      return {
+        gridTemplateColumns: '1fr',
+        maxWidth: '600px',
+        margin: '0 auto'
+      }
+    } else if (itemCount === 2) {
+      return {
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '2rem'
+      }
+    } else if (itemCount <= 4) {
+      return {
+        gridTemplateColumns: `repeat(auto-fit, minmax(${layoutConfig.cardMinWidth}px, 1fr))`,
+        gap: '1.5rem'
+      }
+    } else {
+      return {
+        gridTemplateColumns: `repeat(auto-fill, minmax(${layoutConfig.cardMinWidth}px, 1fr))`,
+        gap: '1.5rem'
+      }
+    }
   }
-])
+  
+  return {
+    gridTemplateColumns: `repeat(${layoutConfig.cardColumns}, minmax(${layoutConfig.cardMinWidth}px, 1fr))`
+  }
+})
+
+// 获取当前显示的内容项数量
+const getCurrentItemCount = () => {
+  if (activeSection.value === 'home') {
+    return 2 // 固定的功能卡片
+  } else if (activeSection.value === 'blog') {
+    if (selectedCategory.value) {
+      return selectedCategory.value.notes.length
+    } else {
+      return blogCategories.length
+    }
+  } else if (activeSection.value === 'games') {
+    return games.length
+  }
+  return 0
+}
+
+// 动态计算特殊布局类名
+const getLayoutClasses = computed(() => {
+  const itemCount = getCurrentItemCount()
+  const classes = ['cards-grid']
+  
+  if (layoutConfig.animateChanges) {
+    classes.push('animated-grid')
+  }
+  
+  if (itemCount === 1) {
+    classes.push('single-item')
+  } else if (itemCount === 2) {
+    classes.push('dual-item')
+  } else if (itemCount <= 4) {
+    classes.push('small-grid')
+  } else {
+    classes.push('large-grid')
+  }
+  
+  return classes.join(' ')
+})
+
+// 计算空状态显示
+const isEmpty = computed(() => {
+  if (activeSection.value === 'blog') {
+    if (selectedCategory.value) {
+      return selectedCategory.value.notes.length === 0
+    } else {
+      return blogCategories.length === 0
+    }
+  } else if (activeSection.value === 'games') {
+    return games.length === 0
+  }
+  return false
+})
+
+// 加载内容
+const loadContent = async () => {
+  try {
+    isLoading.value = true
+    // 强制清除缓存确保加载最新数据
+    contentService.clearCache()
+    const config = await contentService.refreshContent()
+    
+    // 清空现有数据
+    blogCategories.splice(0, blogCategories.length)
+    games.splice(0, games.length)
+    
+    // 添加新数据
+    blogCategories.push(...config.blogCategories)
+    games.push(...config.games)
+    
+    // 调试输出游戏数据
+    console.log('Loaded games data:', games.map(game => ({
+      id: game.id,
+      title: game.title,
+      path: game.path
+    })))
+    
+    // 重新计算统计
+    calculateStats()
+    
+    // 触发布局更新动画
+    await triggerLayoutUpdate()
+    
+    console.log('Content loaded successfully:', {
+      categories: blogCategories.length,
+      games: games.length,
+      totalNotes: blogStats.count,
+      currentLayout: dynamicGridStyle.value
+    })
+  } catch (error) {
+    console.error('Failed to load content:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// 刷新内容
+const refreshContent = async () => {
+  try {
+    refreshing.value = true
+    // 强制清除缓存
+    contentService.clearCache()
+    await loadContent()
+    // 显示刷新成功提示
+    console.log('Content refreshed!')
+  } catch (error) {
+    console.error('Failed to refresh content:', error)
+  } finally {
+    refreshing.value = false
+  }
+}
+
+// 触发布局更新动画
+const triggerLayoutUpdate = async () => {
+  if (layoutConfig.animateChanges) {
+    // 添加更新动画类
+    const grids = document.querySelectorAll('.cards-grid')
+    grids.forEach(grid => {
+      grid.classList.add('layout-updating')
+    })
+    
+    // 等待下一帧后移除动画类
+    await nextTick()
+    setTimeout(() => {
+      grids.forEach(grid => {
+        grid.classList.remove('layout-updating')
+      })
+    }, 300)
+  }
+}
+
+// 监听内容变化并更新布局
+watch([blogCategories, games, activeSection, selectedCategory], () => {
+  nextTick(() => {
+    triggerLayoutUpdate()
+  })
+}, { deep: true })
 
 // 方法
 const setActiveSection = (section: string) => {
   activeSection.value = section
+  selectedCategory.value = null // 重置选中的分类
 }
 
 const updateTime = () => {
@@ -208,7 +294,18 @@ const openNote = (note: Note) => {
 }
 
 const openGame = (game: Game) => {
+  console.log('Opening game:', game.title, 'Path:', game.path)
+  if (!game.path) {
+    console.error('Game path is undefined:', game)
+    return
+  }
   window.open(game.path, '_blank')
+}
+
+// 导航相关方法
+const openAboutPage = () => {
+  console.log('Opening about page')
+  window.open('/showMyself/index.html', '_blank')
 }
 
 // 飞船鼠标相关方法
@@ -355,10 +452,12 @@ const forceHideCursor = () => {
 }
 
 // 组件挂载时初始化
-onMounted(() => {
+onMounted(async () => {
   updateTime()
   startUptimeCounter()
-  calculateStats()
+  
+  // 加载动态内容
+  await loadContent()
   
   nextTick(() => {
     generateParticles()
@@ -367,7 +466,15 @@ onMounted(() => {
   })
   
   setInterval(updateTime, 1000)
+  
+  // 每5分钟自动刷新内容（可选）
+  setInterval(refreshContent, 5 * 60 * 1000)
 })
+
+// 暴露刷新方法到全局（用于调试）
+if (import.meta.env.DEV) {
+  ;(window as any).refreshContent = refreshContent
+}
 </script>
 
 <template>
@@ -407,6 +514,14 @@ onMounted(() => {
         <nav class="nav-menu">
           <button 
             class="nav-btn" 
+            :class="{ active: activeSection === 'about' }"
+            @click="openAboutPage()"
+          >
+            <i class="fas fa-user nav-icon"></i>
+            关于我
+          </button>
+          <button 
+            class="nav-btn" 
             :class="{ active: activeSection === 'home' }"
             @click="setActiveSection('home')"
           >
@@ -429,11 +544,32 @@ onMounted(() => {
             <i class="fas fa-gamepad nav-icon"></i>
             小游戏
           </button>
+          
+          <!-- 内容刷新按钮 -->
+          <button 
+            class="nav-btn refresh-btn" 
+            :class="{ refreshing: refreshing }"
+            @click="refreshContent"
+            :disabled="refreshing"
+            title="刷新内容"
+          >
+            <i class="fas fa-sync-alt nav-icon" :class="{ 'fa-spin': refreshing }"></i>
+            <span v-if="!refreshing">刷新</span>
+            <span v-else>加载中</span>
+          </button>
         </nav>
       </header>
 
       <!-- 主内容区 -->
-      <main class="main-content">
+      <main class="main-content" :class="{ loading: isLoading }">
+        <!-- 加载指示器 -->
+        <div v-if="isLoading" class="loading-overlay">
+          <div class="loading-spinner">
+            <i class="fas fa-sync-alt fa-spin"></i>
+          </div>
+          <p>正在加载内容...</p>
+        </div>
+        
         <!-- 首页 -->
         <section v-if="activeSection === 'home'" class="section home-section">
           <div class="welcome-card">
@@ -477,7 +613,17 @@ onMounted(() => {
               <p class="section-subtitle">似我，非我</p>
             </div>
             
-            <div class="cards-grid">
+            <!-- 空状态显示 -->
+            <div v-if="isEmpty" class="empty-state">
+              <div class="empty-icon">
+                <i class="fas fa-book-open"></i>
+              </div>
+              <h3>暂无笔记分类</h3>
+              <p>点击刷新按钮或添加新的笔记文件夹</p>
+            </div>
+            
+            <!-- 内容网格 -->
+            <div v-else :class="getLayoutClasses" :style="dynamicGridStyle">
               <div 
                 class="content-card category-card" 
                 v-for="category in blogCategories" 
@@ -513,7 +659,7 @@ onMounted(() => {
               <p class="section-subtitle">{{ selectedCategory.description }}</p>
             </div>
             
-            <div class="cards-grid">
+            <div :class="getLayoutClasses" :style="dynamicGridStyle">
               <div 
                 class="content-card" 
                 v-for="note in selectedCategory.notes" 
@@ -545,7 +691,17 @@ onMounted(() => {
             <p class="section-subtitle">搞事情</p>
           </div>
           
-          <div class="cards-grid">
+          <!-- 空状态显示 -->
+          <div v-if="isEmpty" class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <h3>暂无游戏</h3>
+            <p>点击刷新按钮或添加新的游戏文件夹</p>
+          </div>
+          
+          <!-- 内容网格 -->
+          <div v-else :class="getLayoutClasses" :style="dynamicGridStyle">
             <div 
               class="content-card game-card" 
               v-for="game in games" 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择困难症福音 - 游戏合集</title>
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-dice"></i> 选择困难症福音</h1>
+            <p>让随机来帮你做决定！</p>
+        </header>
+
+        <main class="main">
+            <div class="game-grid">
+                <div class="game-card" onclick="navigateToGame('dice')">
+                    <div class="game-icon">
+                        <i class="fas fa-dice-six"></i>
+                    </div>
+                    <h3>投骰子</h3>
+                    <p>投掷六面骰子，计算点数之和</p>
+                    <div class="game-features">
+                        <span><i class="fas fa-cog"></i> 可选择骰子数量</span>
+                        <span><i class="fas fa-calculator"></i> 自定义判定条件</span>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="navigateToGame('wheel')">
+                    <div class="game-icon">
+                        <i class="fas fa-dharmachakra"></i>
+                    </div>
+                    <h3>幸运转盘</h3>
+                    <p>旋转转盘，让命运来选择</p>
+                    <div class="game-features">
+                        <span><i class="fas fa-edit"></i> 自定义分区名称</span>
+                        <span><i class="fas fa-sliders-h"></i> 调整分区数量</span>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="navigateToGame('coin')">
+                    <div class="game-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3>抛硬币</h3>
+                    <p>抛掷硬币，统计正反面频次</p>
+                    <div class="game-features">
+                        <span><i class="fas fa-layer-group"></i> 多枚硬币同时抛投</span>
+                        <span><i class="fas fa-chart-bar"></i> 频次统计</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 选择困难症福音 - 让随机帮你做决定</p>
+        </footer>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html> 

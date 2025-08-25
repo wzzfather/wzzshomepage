@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>nano 常用快捷键学习</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="note.css" />
+</head>
+<body>
+  <h1>nano 常用快捷键学习</h1>
+
+  <div class="tip">
+    <strong>结论先行：</strong>掌握以下快捷键，可在 Linux 下熟练使用 nano 编辑器修改、复制、粘贴、查找替换及跨页操作。
+  </div>
+
+  <h2>1. 文件操作</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Ctrl+O</code></td><td>保存文件</td><td>提示确认文件名，回车即可覆盖</td></tr>
+      <tr><td><code>Ctrl+X</code></td><td>退出 nano</td><td>若未保存，会提示是否保存</td></tr>
+      <tr><td><code>Ctrl+R</code></td><td>插入文件</td><td>将另一个文件内容插入到当前光标位置</td></tr>
+      <tr><td><code>Ctrl+J</code></td><td>对齐段落</td><td>整理当前段落的缩进与换行</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. 光标移动</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Ctrl+A</code></td><td>移动到行首</td><td>快速跳到当前行开头</td></tr>
+      <tr><td><code>Ctrl+E</code></td><td>移动到行尾</td><td>快速跳到当前行结尾</td></tr>
+      <tr><td><code>Ctrl+Y</code></td><td>向上翻页</td><td>类似 PageUp</td></tr>
+      <tr><td><code>Ctrl+V</code></td><td>向下翻页</td><td>类似 PageDown</td></tr>
+      <tr><td><code>Ctrl+_</code></td><td>跳到指定行/列</td><td>按行号快速定位光标</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. 文本选取、剪切、复制、粘贴</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Ctrl+^</code></td><td>开始标记文本</td><td>设置标记起点，用于复制或剪切</td></tr>
+      <tr><td><code>Ctrl+K</code></td><td>剪切当前行/选中内容</td><td>剪切到 nano 内部剪贴板</td></tr>
+      <tr><td><code>Alt+6</code></td><td>复制选中内容</td><td>与 Ctrl+K 区别：复制不删除原文</td></tr>
+      <tr><td><code>Ctrl+U</code></td><td>粘贴</td><td>从 nano 内部剪贴板粘贴到光标位置</td></tr>
+      <tr><td><code>Ctrl+^ + 翻页</code></td><td>跨页选择文本</td><td>标记起点后可使用方向键/PageUp/PageDown 选择大段文本</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. 查找与替换</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Ctrl+W</code></td><td>查找文本</td><td>输入关键字跳转匹配位置</td></tr>
+      <tr><td><code>Ctrl+\\</code></td><td>替换文本</td><td>可逐个确认或一键替换所有</td></tr>
+      <tr><td><code>Alt+W</code></td><td>查找下一个匹配</td><td>重复搜索当前关键字</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. 撤销与重做</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Alt+U</code></td><td>撤销</td><td>撤销上一次操作</td></tr>
+      <tr><td><code>Alt+E</code></td><td>重做</td><td>恢复撤销操作</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. 文件浏览与其他实用操作</h2>
+  <table>
+    <thead>
+      <tr><th>快捷键</th><th>效果</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Ctrl+T</code></td><td>拼写检查</td><td>启动拼写检查程序（若系统有安装 aspell）</td></tr>
+      <tr><td><code>Ctrl+C</code></td><td>显示光标位置</td><td>行号与列号信息</td></tr>
+      <tr><td><code>Ctrl+G</code></td><td>显示帮助</td><td>列出 nano 所有快捷键</td></tr>
+    </tbody>
+  </table>
+
+  <h2>7. 跨页选中文本示例操作</h2>
+  <ol>
+    <li>光标移动到选择起点，按 <code>Ctrl+^</code>。</li>
+    <li>使用方向键或 <code>PageDown</code>/<code>Ctrl+V</code> 移动光标跨页，扩展选择。</li>
+    <li>选择完成后按 <code>Alt+6</code> 复制或 <code>Ctrl+K</code>剪切。</li>
+    <li>移动光标到目标位置，按 <code>Ctrl+U</code> 粘贴。</li>
+  </ol>
+
+  <div class="tip">
+    <strong>记忆口诀：</strong>Ctrl+^ → 翻页选 → Alt+6/ Ctrl+K → Ctrl+U。
+  </div>
+
+  <h2>8. 小结一下 </h2>
+  <ul>
+    <li>Ctrl+O 保存 ✅</li>
+    <li>Ctrl+X 退出 ✅</li>
+    <li>Ctrl+K / Alt+6 + Ctrl+U 剪切/复制粘贴 ✅</li>
+    <li>Ctrl+^ + 翻页可跨页选中 ✅</li>
+    <li>Ctrl+W / Ctrl+\\ 查找与替换 ✅</li>
+    <li>Alt+U / Alt+E 撤销/重做 ✅</li>
+  </ul>
+
+  <footer>
+    <p>最后更新：2025-08-18 </p>
+  </footer>
+</body>
+</html>

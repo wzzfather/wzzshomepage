@@ -1,0 +1,112 @@
+{
+  "blogCategories": [
+    {
+      "id": "rag--",
+      "title": "RAG搭建",
+      "icon": "fas fa-brain",
+      "description": "RAG搭建相关学习笔记",
+      "folderPath": "笔记/RAG搭建",
+      "notes": [
+        {
+          "id": 1,
+          "title": "实战｜Dify+DeepSeek V3.1+Minio 文件解析思维导图",
+          "description": "最后更新：2025-08-22...",
+          "icon": "fas fa-brain",
+          "date": "2025-08",
+          "tags": [
+            "RAG搭建",
+            "笔记"
+          ],
+          "path": "/content/notes/rag--/dify自动创建思维导图.html"
+        }
+      ]
+    },
+    {
+      "id": "git----",
+      "title": "git版本管理",
+      "icon": "fas fa-code-branch",
+      "description": "git版本管理相关学习笔记",
+      "folderPath": "笔记/git版本管理",
+      "notes": [
+        {
+          "id": 1,
+          "title": "Git 从暂存到分支管理再到上传仓库全流程笔记",
+          "description": "本笔记适用于从 Git 初学到能管理分支和推送到远程仓库的全过程，涵盖工作区、暂存区、本地仓库、远程仓库之间的关系。...",
+          "icon": "fas fa-code-branch",
+          "date": "2025-08",
+          "tags": [
+            "git版本管理",
+            "笔记"
+          ],
+          "path": "/content/notes/git----/git操作笔记.html"
+        }
+      ]
+    },
+    {
+      "id": "linux------",
+      "title": "linux系统使用心得",
+      "icon": "fab fa-linux",
+      "description": "linux系统使用心得相关学习笔记",
+      "folderPath": "笔记/linux系统使用心得",
+      "notes": [
+        {
+          "id": 1,
+          "title": "Linux 新建分区自动挂载（btrfs & ntfs-3g）操作笔记",
+          "description": "原来错误地分成了两行，导致系统把 2 识别成“文件系统类型”，出现 unknown filesystem type '2'。...",
+          "icon": "fab fa-linux",
+          "date": "2025-08",
+          "tags": [
+            "linux系统使用心得",
+            "笔记"
+          ],
+          "path": "/content/notes/linux------/linux系统挂载新分区笔记.html"
+        },
+        {
+          "id": 2,
+          "title": "nano 常用快捷键学习",
+          "description": "最后更新：2025-08-18 ...",
+          "icon": "fab fa-linux",
+          "date": "2025-08",
+          "tags": [
+            "linux系统使用心得",
+            "笔记"
+          ],
+          "path": "/content/notes/linux------/nano常用操作.html"
+        }
+      ]
+    }
+  ],
+  "games": [
+    {
+      "id": "monkey-tree",
+      "title": "猴子爬树吃椰子",
+      "category": "动作游戏",
+      "icon": "fas fa-tree",
+      "difficulty": "简单",
+      "features": [
+        "关卡挑战",
+        "时间限制",
+        "技巧操作"
+      ],
+      "folderPath": "小游戏/猴子上树",
+      "entryFile": "index.html",
+      "path": "/content/games/monkey-tree/index.html"
+    },
+    {
+      "id": "decision-helper",
+      "title": "选择困难症福音",
+      "category": "工具合集",
+      "icon": "fas fa-dice",
+      "difficulty": "简单",
+      "features": [
+        "投骰子",
+        "幸运转盘",
+        "抛硬币",
+        "随机决策"
+      ],
+      "folderPath": "小游戏/选择困难症福音",
+      "entryFile": "index.html",
+      "path": "/content/games/decision-helper/index.html"
+    }
+  ]
+}

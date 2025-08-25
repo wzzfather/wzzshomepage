@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运转盘 - 选择困难症福音</title>
+    <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/wheel.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="../../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 返回主页
+            </a>
+            <h1><i class="fas fa-dharmachakra"></i> 幸运转盘</h1>
+            <p>旋转转盘，让命运来选择</p>
+        </header>
+
+        <main class="main">
+            <div class="game-container">
+                <div class="controls-panel">
+                    <div class="control-group">
+                        <label for="sectionCount">
+                            <i class="fas fa-layer-group"></i> 分区数量：
+                        </label>
+                        <input type="number" id="sectionCount" min="2" max="12" value="6">
+                    </div>
+
+                    <div class="sections-config">
+                        <h3><i class="fas fa-edit"></i> 分区设置</h3>
+                        <div id="sectionsContainer" class="sections-container">
+                            <!-- 分区输入框将在这里动态生成 -->
+                        </div>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button id="updateBtn" class="update-btn">
+                            <i class="fas fa-sync-alt"></i> 更新转盘
+                        </button>
+                        <button id="spinBtn" class="spin-btn">
+                            <i class="fas fa-play"></i> 开始转动
+                        </button>
+                    </div>
+                </div>
+
+                <div class="wheel-area">
+                    <div class="wheel-container">
+                        <div class="wheel-pointer">
+                            <i class="fas fa-caret-down"></i>
+                        </div>
+                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                    </div>
+
+                    <div id="result" class="result hidden">
+                        <div class="result-content">
+                            <i class="fas fa-trophy"></i>
+                            <h3>转盘结果</h3>
+                            <div class="result-text">
+                                <span id="resultText"></span>
+                            </div>
+                            <button id="spinAgainBtn" class="spin-again-btn">
+                                <i class="fas fa-redo"></i> 再次转动
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/wheel.js"></script>
+</body>
+</html> 
