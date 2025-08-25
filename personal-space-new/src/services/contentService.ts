@@ -53,7 +53,7 @@ class ContentService {
       }
       const rawConfig = await response.json()
       console.log('Raw config loaded:', {
-        games: rawConfig.games?.map(g => ({ id: g.id, path: g.path })) || []
+        games: rawConfig.games?.map((g: any) => ({ id: g.id, path: g.path })) || []
       })
       this.config = rawConfig
       
@@ -66,7 +66,7 @@ class ContentService {
       }))
       
       console.log('Processed config games:', {
-        games: this.config!.games.map(g => ({ id: g.id, path: g.path }))
+        games: this.config!.games.map((g: any) => ({ id: g.id, path: g.path }))
       })
 
       return this.config!
