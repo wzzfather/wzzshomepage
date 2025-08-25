@@ -200,7 +200,7 @@ function scanNotesFolder(categoryConfig) {
         
         // 复制文件到public目录
         const targetPath = path.join(categoryDir, file)
-        const publicPath = `/content/notes/${categoryConfig.id}/${file}`
+        const publicPath = `content/notes/${categoryConfig.id}/${file}`
         
         if (copyToPublic(filePath, targetPath)) {
           notes.push({
@@ -248,7 +248,7 @@ function scanGamesFolder() {
       // 更新游戏路径
       const updatedGame = {
         ...gameConfig,
-        path: `/content/games/${gameConfig.id}/${gameConfig.entryFile}`
+        path: `content/games/${gameConfig.id}/${gameConfig.entryFile}`
       }
       
       scannedGames.push(updatedGame)

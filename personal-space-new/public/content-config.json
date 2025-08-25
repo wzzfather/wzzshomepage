@@ -17,7 +17,7 @@
             "RAG搭建",
             "笔记"
           ],
-          "path": "/content/notes/rag--/dify自动创建思维导图.html"
+          "path": "content/notes/rag--/dify自动创建思维导图.html"
         }
       ]
     },
@@ -38,7 +38,7 @@
             "git版本管理",
             "笔记"
           ],
-          "path": "/content/notes/git----/git操作笔记.html"
+          "path": "content/notes/git----/git操作笔记.html"
         }
       ]
     },
@@ -59,7 +59,7 @@
             "linux系统使用心得",
             "笔记"
           ],
-          "path": "/content/notes/linux------/linux系统挂载新分区笔记.html"
+          "path": "content/notes/linux------/linux系统挂载新分区笔记.html"
         },
         {
           "id": 2,
@@ -71,7 +71,7 @@
             "linux系统使用心得",
             "笔记"
           ],
-          "path": "/content/notes/linux------/nano常用操作.html"
+          "path": "content/notes/linux------/nano常用操作.html"
         }
       ]
     }
@@ -90,7 +90,7 @@
       ],
       "folderPath": "小游戏/猴子上树",
       "entryFile": "index.html",
-      "path": "/content/games/monkey-tree/index.html"
+      "path": "content/games/monkey-tree/index.html"
     },
     {
       "id": "decision-helper",
@@ -106,7 +106,7 @@
       ],
       "folderPath": "小游戏/选择困难症福音",
       "entryFile": "index.html",
-      "path": "/content/games/decision-helper/index.html"
+      "path": "content/games/decision-helper/index.html"
     }
   ]
 }
