@@ -305,9 +305,8 @@ const openGame = (game: Game) => {
 // 导航相关方法
 const openAboutPage = () => {
   console.log('Opening about page')
-  // 使用相对路径，确保在GitHub Pages上正确跳转
-  const basePath = import.meta.env.PROD ? '/wzzshomepage' : ''
-  window.open(`${basePath}/showMyself/index.html`, '_blank')
+  // 跳转到独立部署的个人简历网站
+  window.open('https://wzzfather.github.io/myweb/', '_blank')
 }
 
 // 飞船鼠标相关方法
